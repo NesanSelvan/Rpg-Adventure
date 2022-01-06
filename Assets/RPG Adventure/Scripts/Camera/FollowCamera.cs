@@ -22,7 +22,7 @@ public class FollowCamera : MonoBehaviour
         currentRotation = Mathf.LerpAngle(currentRotation, wantedRotation, 0.5f);
         Debug.Log("Final: " + currentRotation);
         transform.position = new Vector3(Target.position.x, 5.0f, Target.position.z);
-        Quaternion currentRotationangle = Quaternion.Euler(0, currentRotation, 0);
+        Quaternion currentRotationangle = Quaternion.Euler(0, 0, 0);
         Vector3 rotatedposition = currentRotationangle * Vector3.forward;
         transform.position -= rotatedposition * 8;
         transform.LookAt(Target);
