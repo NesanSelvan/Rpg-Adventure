@@ -4,7 +4,14 @@ using UnityEngine;
 public class Cameracontroller : MonoBehaviour
 {
     [SerializeField]
-  public  CinemachineFreeLook freeLookCamera;    // Start is called before the first frame update
+    CinemachineFreeLook freeLookCamera;    // Start is called before the first frame update
+    public CinemachineFreeLook PlayerCam
+    {
+        get
+        {
+            return freeLookCamera;
+        }
+    }
     // Update is called once per frame
     void Update()
     {

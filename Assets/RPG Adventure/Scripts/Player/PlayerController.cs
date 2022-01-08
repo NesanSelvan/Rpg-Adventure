@@ -8,13 +8,21 @@ namespace RpgAdventure
 
     public class PlayerController : MonoBehaviour
     {
-        const float k_Acceleration = 20.0f;
+        public static PlayerController instance
+        {
+            get
+            {
+                return s_instance;
+            }
+        }
+        const float k_Acceleration = 15;
         const float k_Deceleration = 800;
 
         public float maxForwardSpeed = 8.0f;
-
+        public float gravity = 20;
+        private float m_verticalSpeed;
        
-
+        private static PlayerController s_instance;
         private PlayerInput m_PlayerInput;
      
         private Animator m_Animator;
@@ -30,9 +38,10 @@ namespace RpgAdventure
         private void Awake()
         {
             m_PlayerInput = GetComponent<PlayerInput>();
-            m_cameraController = GetComponent<Cameracontroller>();
+            m_cameraController =Camera.main.GetComponent<Cameracontroller>();
             m_Animator = GetComponent<Animator>();
             m_chController = GetComponent<CharacterController>();
+            s_instance = this;
 
         }
         private void FixedUpdate()
@@ -43,6 +52,7 @@ namespace RpgAdventure
             //targetDirection.y = 0;
            ComputeMovement();
            ComputeRotation();
+            ComputeVerticalmovement();
             if (m_PlayerInput.IsMoveInput){
                 float rotationSpeed = Mathf.Lerp(1200, 400, m_ForwardSpeed / m_DesiredForwardSpeed);
                 m_targetRotation = Quaternion.RotateTowards(transform.rotation, m_targetRotation, rotationSpeed * Time.fixedDeltaTime);
@@ -51,7 +61,13 @@ namespace RpgAdventure
         }
       private void OnAnimatorMove()
       {
-            m_chController.Move(m_Animator.deltaPosition);
+            Vector3 movement = m_Animator.deltaPosition;
+            movement += m_verticalSpeed * Vector3.up * Time.fixedDeltaTime;
+            m_chController.Move(movement);
+        }
+        private void ComputeVerticalmovement()
+        {
+            m_verticalSpeed = -gravity;
         }
         private void ComputeMovement()
         {
@@ -70,7 +86,7 @@ namespace RpgAdventure
         private void ComputeRotation()
         {
             Vector3 MoveInput = m_PlayerInput.moveInput.normalized;
-            Vector3 CameraDirection = Quaternion.Euler(0, m_cameraController.freeLookCamera.m_XAxis.Value, 0) * Vector3.forward;
+            Vector3 CameraDirection = Quaternion.Euler(0, m_cameraController.PlayerCam.m_XAxis.Value, 0) * Vector3.forward;
             Quaternion TargetRotation;
             if(Mathf.Approximately( Vector3.Dot(MoveInput,Vector3.forward),-1.0f))
                 {
