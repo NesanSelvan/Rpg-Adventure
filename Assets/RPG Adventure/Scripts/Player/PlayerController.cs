@@ -33,6 +33,7 @@ namespace RpgAdventure
         private Quaternion m_targetRotation;
         private CharacterController m_chController;
         //private Quaternion TargetRotation;
+        private readonly int m_HashAttack = Animator.StringToHash("Attack");
 
         private readonly int m_HashForwardSpeed = Animator.StringToHash("ForwardSpeed");
         private void Awake()
@@ -57,6 +58,11 @@ namespace RpgAdventure
                 float rotationSpeed = Mathf.Lerp(1200, 400, m_ForwardSpeed / m_DesiredForwardSpeed);
                 m_targetRotation = Quaternion.RotateTowards(transform.rotation, m_targetRotation, rotationSpeed * Time.fixedDeltaTime);
                 transform.rotation = m_targetRotation;
+            }
+            m_Animator.ResetTrigger(m_HashAttack);
+            if(m_PlayerInput.IsAttack  )
+            {
+                m_Animator.SetTrigger(m_HashAttack);
             }
         }
       private void OnAnimatorMove()
